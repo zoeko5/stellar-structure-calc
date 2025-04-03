@@ -1,0 +1,50 @@
+! inlist to evolve a 1 solar mass star with solar composition
+
+&star_job
+  ! begin with a pre-main sequence model
+    create_pre_main_sequence_model = .true.
+
+  ! save a model at the end of the run
+    save_model_when_terminate = .false.
+    save_model_filename = '1M_at_TAMS.mod'
+
+  ! display on-screen plots
+    pgstar_flag = .true.
+/ ! end of star_job namelist
+
+
+&eos
+/ ! end of eos namelist
+
+
+&kap
+  use_Type2_opacities = .true.
+  Zbase = 0.02
+/ ! end of kap namelist
+
+
+&controls
+  ! starting mass and composition
+    initial_mass = 1.0           ! in Msun units
+    initial_z = 0.02             ! metal fraction
+    initial_y = 0.28             ! helium fraction (sets X = 0.70)
+
+  ! stop condition: near ZAMS
+    Lnuc_div_L_zams_limit = 0.99d0
+    stop_near_zams = .true.
+
+  ! stop if hydrogen in core is nearly depleted
+    xa_central_lower_limit_species(1) = 'h1'
+    xa_central_lower_limit(1) = 1d-3
+
+  ! energy conservation solver settings
+    energy_eqn_option = 'dedt'
+    use_gold_tolerances = .true.
+
+  ! output controls
+    history_interval = 10
+    profile_interval = 20
+    terminal_interval = 10
+    write_profiles_flag = .true.
+
+/ ! end of controls namelist
